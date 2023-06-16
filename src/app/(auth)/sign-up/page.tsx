@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 
+import { SignUp } from "@/components/Auth";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/ui/Button";
-import { SignIn } from "@/components/Auth";
 
 const page = () => {
   return (
@@ -20,7 +20,7 @@ const page = () => {
           Home
         </Link>
 
-        <SignIn />
+        <SignUp />
       </div>
     </div>
   );
