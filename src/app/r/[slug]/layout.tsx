@@ -5,6 +5,8 @@ import SubscriptionToggle from "@/components/SubscriptionToggle";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/Button";
 
 const Layout = async ({
   children,
@@ -96,6 +98,16 @@ const Layout = async ({
                   isSubscribed={isSubscribed}
                 />
               )}
+
+              <Link
+                href={`/r/${name}/submit`}
+                className={buttonVariants({
+                  variant: "outline",
+                  className: "w-full mb-6",
+                })}
+              >
+                Create post
+              </Link>
             </dl>
           </div>
         </div>
