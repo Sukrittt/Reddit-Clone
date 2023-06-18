@@ -10,6 +10,8 @@ import { ExtendedPost } from "@/types/db";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 import { formatTimeToNow } from "@/lib/utils";
 import { EditorOutput } from "./Editor";
+import PostVoteClient from "./post-vote/PostVoteClient";
+import { Vote } from "@prisma/client";
 
 interface PostFeedProps {
   session: Session | null;
@@ -66,13 +68,21 @@ const PostFeed: FC<PostFeedProps> = ({
         if (index === posts.length - 1) {
           return (
             <li key={post.id} ref={ref}>
-              <Post post={post} />
+              <Post
+                post={post}
+                votesAmt={voteCount}
+                currentVote={currentVote}
+              />
             </li>
           );
         } else {
           return (
             <li key={post.id}>
-              <Post post={post} />
+              <Post
+                post={post}
+                votesAmt={voteCount}
+                currentVote={currentVote}
+              />
             </li>
           );
         }
@@ -83,18 +93,28 @@ const PostFeed: FC<PostFeedProps> = ({
 
 export default PostFeed;
 
-const Post = (props: { post: ExtendedPost }) => {
-  const { post } = props;
+type PartialVote = Pick<Vote, "type">;
+
+const Post = (props: {
+  post: ExtendedPost;
+  votesAmt: number;
+  currentVote?: PartialVote;
+}) => {
+  const { post, votesAmt, currentVote } = props;
   const subredditName = post.Subreddit.name;
 
   const postRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="rounded-md bg-white shadow">
-      <div className="px-6 py-4 flex justify-between">
-        {/* votes */}
+      <div className="px-6 py-4 flex justify-between flex-col sm:flex-row">
+        <PostVoteClient
+          initialVoteAmt={votesAmt}
+          initialVote={currentVote?.type}
+          postId={post.id}
+        />
 
-        <div className="w-0 flex-1">
+        <div className="w-full sm:w-0 flex-1">
           <div className="max-h-40 mt-1 text-xs text-gray-500">
             {subredditName && (
               <>
