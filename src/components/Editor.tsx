@@ -5,7 +5,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EditorJS from "@editorjs/editorjs";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -157,10 +157,22 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
       const { data } = await axios.post("/api/subreddit/post/create", payload);
       return data;
     },
-    onError: () => {
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        const responseStatus = error.response?.status;
+
+        if (responseStatus === 400) {
+          return toast({
+            title: "You are not a member of this subreddit.",
+            description: "Join this subreddit in order to post here.",
+            variant: "destructive",
+          });
+        }
+      }
+
       return toast({
-        title: "Something went wrong",
-        description: "Something went wrong while creating your post",
+        title: "Something went wrong.",
+        description: "Something went wrong while creating your post.",
         variant: "destructive",
       });
     },

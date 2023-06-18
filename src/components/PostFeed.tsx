@@ -1,17 +1,18 @@
 "use client";
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Vote } from "@prisma/client";
 import { Session } from "next-auth";
 import { MessageSquare } from "lucide-react";
 
-import { ExtendedPost } from "@/types/db";
-import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
-import { formatTimeToNow } from "@/lib/utils";
 import { EditorOutput } from "./Editor";
+import { Loader } from "@/ui/Loader";
+import { ExtendedPost } from "@/types/db";
+import { formatTimeToNow } from "@/lib/utils";
 import PostVoteClient from "./post-vote/PostVoteClient";
-import { Vote } from "@prisma/client";
+import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 
 interface PostFeedProps {
   session: Session | null;
@@ -51,6 +52,12 @@ const PostFeed: FC<PostFeedProps> = ({
 
   const posts = data?.pages.flatMap((page) => page) ?? initialPosts;
 
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      fetchNextPage();
+    }
+  }, [entry, fetchNextPage]);
+
   return (
     <ul className="flex flex-col col-span-2 space-y-6">
       {posts.map((post, index) => {
@@ -87,6 +94,7 @@ const PostFeed: FC<PostFeedProps> = ({
           );
         }
       })}
+      {isFetchingNextPage && <Loader />}
     </ul>
   );
 };
