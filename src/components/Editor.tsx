@@ -7,6 +7,8 @@ import EditorJS from "@editorjs/editorjs";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
+import dynamic from "next/dynamic";
 
 import { Button } from "@/ui/Button";
 import { uploadFiles } from "@/lib/uploadthing";
@@ -231,3 +233,53 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
 };
 
 export default Editor;
+
+const Output = dynamic(
+  async () => (await import("editorjs-react-renderer")).default,
+  {
+    ssr: false,
+  }
+);
+
+const style = {
+  paragraph: {
+    fontSize: "0.875rem",
+    lineHeight: "1.25rem",
+  },
+};
+
+const renderers = {
+  image: CustomImageRenderer,
+  code: CustomCodeRenderer,
+};
+
+export const EditorOutput = (props: { content: any }) => {
+  const { content } = props;
+
+  return (
+    <Output
+      data={content}
+      className="text-sm"
+      style={style}
+      renderers={renderers}
+    />
+  );
+};
+
+function CustomImageRenderer({ data }: any) {
+  const src = data.file.url;
+
+  return (
+    <div className="relative w-full min-h-[15rem]">
+      <Image src={src} alt="editor-content" className="object-contain" fill />
+    </div>
+  );
+}
+
+function CustomCodeRenderer({ data }: any) {
+  return (
+    <pre className="bg-gray-800 rounded-md p-4">
+      <code className="text-gray-100 text-sm">{data.code}</code>
+    </pre>
+  );
+}
