@@ -4,8 +4,8 @@ import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Vote } from "@prisma/client";
-import { Session } from "next-auth";
 import { MessageSquare } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 import { EditorOutput } from "./Editor";
 import { Loader } from "@/ui/Loader";
@@ -15,16 +15,12 @@ import PostVoteClient from "./post-vote/PostVoteClient";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 
 interface PostFeedProps {
-  session: Session | null;
   initialPosts: ExtendedPost[];
   subredditName?: string;
 }
 
-const PostFeed: FC<PostFeedProps> = ({
-  initialPosts,
-  subredditName,
-  session,
-}) => {
+const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
+  const { data: session } = useSession();
   const lastPostRef = useRef<HTMLElement>(null);
 
   const { ref, entry } = useIntersection({

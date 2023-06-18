@@ -48,7 +48,7 @@ export async function GET(req: Request) {
       };
     } else if (session) {
       whereClause = {
-        subreddit: {
+        Subreddit: {
           id: {
             in: followedCommunityIds,
           },
