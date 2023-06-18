@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -7,19 +6,6 @@ import { Button } from "@/ui/Button";
 
 const CloseModal = () => {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState<boolean>(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (isMounted) {
-    window.addEventListener("keydown", (event) => {
-      if (event.code === "Escape") {
-        router.back();
-      }
-    });
-  }
 
   return (
     <Button
