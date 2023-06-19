@@ -1,9 +1,11 @@
 "use client";
-import { FC, useCallback, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Users } from "lucide-react";
+import { Prisma, Subreddit } from "@prisma/client";
+import debounce from "lodash.debounce";
 
 import {
   Command,
@@ -13,14 +15,14 @@ import {
   CommandItem,
   CommandList,
 } from "@/ui/Command";
-import { Prisma, Subreddit } from "@prisma/client";
-import debounce from "lodash.debounce";
 import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 
 interface SearchBarProps {}
 
 const SearchBar: FC<SearchBarProps> = ({}) => {
   const router = useRouter();
+  const pathname = usePathname();
+
   const commandRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState<string>("");
 
@@ -53,6 +55,10 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
   useOnClickOutside(commandRef, () => {
     setInput("");
   });
+
+  useEffect(() => {
+    setInput("");
+  }, [pathname]);
 
   return (
     <Command
