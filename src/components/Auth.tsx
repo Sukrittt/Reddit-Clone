@@ -1,5 +1,5 @@
-import { Icons } from "./Icons";
-import UserAuthForm from "@/components/UserAuthForm";
+import { Icons } from "@/components/Icons";
+import UserAuthForm from "@/components/User/UserAuthForm";
 
 export const SignIn = () => {
   return (

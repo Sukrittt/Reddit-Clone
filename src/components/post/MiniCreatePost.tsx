@@ -4,9 +4,9 @@ import { Session } from "next-auth";
 import { useRouter, usePathname } from "next/navigation";
 import { ImageIcon, Link2 } from "lucide-react";
 
-import UserAvatar from "./UserAvatar";
 import { Input } from "@/ui/Input";
 import { Button } from "@/ui/Button";
+import UserAvatar from "@/components/User/UserAvatar";
 
 interface MiniCreatePostProps {
   session: Session | null;

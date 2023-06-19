@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import MiniCreatePost from "@/components/MiniCreatePost";
-import PostFeed from "@/components/PostFeed";
+import MiniCreatePost from "@/components/post/MiniCreatePost";
+import PostFeed from "@/components/post/PostFeed";
 
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 import { getAuthSession } from "@/lib/auth";

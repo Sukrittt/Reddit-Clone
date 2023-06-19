@@ -9,7 +9,7 @@ import { CachedPost } from "@/types/redis";
 import { buttonVariants } from "@/ui/Button";
 import { formatTimeToNow } from "@/lib/utils";
 import { EditorOutput } from "@/components/Editor";
-import CommentSection from "@/components/CommentSection";
+import CommentSection from "@/components/comment/CommentSection";
 import PostVoteServer from "@/components/post-vote/PostVoteServer";
 
 interface PageProps {

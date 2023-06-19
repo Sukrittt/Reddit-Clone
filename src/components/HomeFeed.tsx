@@ -1,7 +1,9 @@
+import { notFound } from "next/navigation";
+
 import { db } from "@/lib/db";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
-import PostFeed from "./PostFeed";
-import { Session } from "next-auth";
+import PostFeed from "./post/PostFeed";
+import { getAuthSession } from "@/lib/auth";
 
 export const GeneralFeed = async () => {
   const posts = await db.post.findMany({
@@ -20,8 +22,10 @@ export const GeneralFeed = async () => {
   return <PostFeed initialPosts={posts} />;
 };
 
-export const CustomFeed = async (props: { session: Session }) => {
-  const { session } = props;
+export const CustomFeed = async () => {
+  const session = await getAuthSession();
+
+  if (!session) return notFound();
 
   const followedCommunities = await db.subscription.findMany({
     where: {

@@ -13,7 +13,7 @@ import { Textarea } from "@/ui/Textarea";
 import { toast } from "@/hooks/use-toast";
 import { ExtendedComment } from "@/types/db";
 import { formatTimeToNow } from "@/lib/utils";
-import UserAvatar from "@/components/UserAvatar";
+import UserAvatar from "@/components/User/UserAvatar";
 import { useAuthToast } from "@/hooks/useAuthToast";
 import CommentVote from "@/components/post-vote/CommentVote";
 import type { CommentValidatorType } from "@/lib/validators/comment";

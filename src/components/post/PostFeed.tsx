@@ -7,11 +7,11 @@ import { Vote } from "@prisma/client";
 import { MessageSquare } from "lucide-react";
 import { useSession } from "next-auth/react";
 
-import { EditorOutput } from "./Editor";
 import { Loader } from "@/ui/Loader";
 import { ExtendedPost } from "@/types/db";
 import { formatTimeToNow } from "@/lib/utils";
-import PostVoteClient from "./post-vote/PostVoteClient";
+import { EditorOutput } from "@/components/Editor";
+import PostVoteClient from "@/components/post-vote/PostVoteClient";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 
 interface PostFeedProps {
