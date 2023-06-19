@@ -1,5 +1,5 @@
 "use client";
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -15,12 +15,14 @@ import {
 } from "@/ui/Command";
 import { Prisma, Subreddit } from "@prisma/client";
 import debounce from "lodash.debounce";
+import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 
 interface SearchBarProps {}
 
 const SearchBar: FC<SearchBarProps> = ({}) => {
-  const [input, setInput] = useState<string>("");
   const router = useRouter();
+  const commandRef = useRef<HTMLDivElement>(null);
+  const [input, setInput] = useState<string>("");
 
   const {
     data: queyrResults,
@@ -48,8 +50,15 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     request();
   }, []);
 
+  useOnClickOutside(commandRef, () => {
+    setInput("");
+  });
+
   return (
-    <Command className="relative rounded-lg border max-w-lg z-50 overflow-visible">
+    <Command
+      ref={commandRef}
+      className="relative rounded-lg border max-w-lg z-50 overflow-visible"
+    >
       <CommandInput
         value={input}
         onValueChange={(text) => {
