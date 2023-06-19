@@ -14,6 +14,7 @@ import { Button } from "@/ui/Button";
 import { uploadFiles } from "@/lib/uploadthing";
 import { toast } from "@/hooks/use-toast";
 import { PostCreationType, PostValidator } from "@/lib/validators/post";
+import { useAuthToast } from "@/hooks/useAuthToast";
 
 interface EditorProps {
   subredditId: string;
@@ -39,6 +40,8 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
 
   const router = useRouter();
   const pathname = usePathname();
+
+  const { loginToast } = useAuthToast();
 
   //prevent massive imports on re-renders
   const initializeEditor = useCallback(async () => {
@@ -167,6 +170,8 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
             description: "Join this subreddit in order to post here.",
             variant: "destructive",
           });
+        } else if (responseStatus === 401) {
+          return loginToast();
         }
       }
 
