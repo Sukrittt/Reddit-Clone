@@ -54,12 +54,10 @@ const CommentVote: FC<CommentVoteProps> = ({
       setCurrentVote(previousVote);
 
       if (err instanceof AxiosError) {
-        if (err instanceof AxiosError) {
-          const responseStatus = err.response?.status;
+        const responseStatus = err.response?.status;
 
-          if (responseStatus === 401) {
-            return loginToast();
-          }
+        if (responseStatus === 401) {
+          return loginToast();
         }
       }
 

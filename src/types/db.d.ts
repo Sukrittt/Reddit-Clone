@@ -3,6 +3,7 @@ import {
   CommentVote,
   Post,
   Subreddit,
+  Subscription,
   User,
   Vote,
 } from "@prisma/client";
@@ -17,4 +18,9 @@ export type ExtendedPost = Post & {
 export type ExtendedComment = Comment & {
   votes: CommentVote[];
   author: User;
+};
+export type ExtendedSubreddit = Subreddit & {
+  subscribers: (Subscription & {
+    user: User;
+  })[];
 };

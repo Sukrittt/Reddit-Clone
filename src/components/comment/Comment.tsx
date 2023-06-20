@@ -56,19 +56,16 @@ const PostComment: FC<PostCommentProps> = ({
     },
     onError: (err) => {
       if (err instanceof AxiosError) {
-        if (err instanceof AxiosError) {
-          const responseStatus = err.response?.status;
+        const responseStatus = err.response?.status;
 
-          if (responseStatus === 401) {
-            return loginToast();
-          } else if (responseStatus === 400) {
-            return toast({
-              title: "You are not a member of this subreddit.",
-              description:
-                "Please join this subreddit to comment on this post.",
-              variant: "destructive",
-            });
-          }
+        if (responseStatus === 401) {
+          return loginToast();
+        } else if (responseStatus === 400) {
+          return toast({
+            title: "You are not a member of this subreddit.",
+            description: "Please join this subreddit to comment on this post.",
+            variant: "destructive",
+          });
         }
       }
 
@@ -200,19 +197,16 @@ export const CreateComment: FC<CreateCommentProps> = ({
     },
     onError: (err) => {
       if (err instanceof AxiosError) {
-        if (err instanceof AxiosError) {
-          const responseStatus = err.response?.status;
+        const responseStatus = err.response?.status;
 
-          if (responseStatus === 401) {
-            return loginToast();
-          } else if (responseStatus === 400) {
-            return toast({
-              title: "You are not a member of this subreddit.",
-              description:
-                "Please join this subreddit to comment on this post.",
-              variant: "destructive",
-            });
-          }
+        if (responseStatus === 401) {
+          return loginToast();
+        } else if (responseStatus === 400) {
+          return toast({
+            title: "You are not a member of this subreddit.",
+            description: "Please join this subreddit to comment on this post.",
+            variant: "destructive",
+          });
         }
       }
 
