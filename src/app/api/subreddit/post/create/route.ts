@@ -25,9 +25,7 @@ export async function POST(req: Request) {
     if (!subscriptionExists) {
       return new Response(
         "You have to be subscribed to this subreddit in order to make a post.",
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 

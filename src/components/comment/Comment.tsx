@@ -61,13 +61,20 @@ const PostComment: FC<PostCommentProps> = ({
 
           if (responseStatus === 401) {
             return loginToast();
+          } else if (responseStatus === 400) {
+            return toast({
+              title: "You are not a member of this subreddit.",
+              description:
+                "Please join this subreddit to comment on this post.",
+              variant: "destructive",
+            });
           }
         }
       }
 
       return toast({
         title: "Something went wrong.",
-        description: "Your vote was not registerd. Please try again.",
+        description: "Your comment was not registerd. Please try again.",
         variant: "destructive",
       });
     },
@@ -198,13 +205,20 @@ export const CreateComment: FC<CreateCommentProps> = ({
 
           if (responseStatus === 401) {
             return loginToast();
+          } else if (responseStatus === 400) {
+            return toast({
+              title: "You are not a member of this subreddit.",
+              description:
+                "Please join this subreddit to comment on this post.",
+              variant: "destructive",
+            });
           }
         }
       }
 
       return toast({
         title: "Something went wrong.",
-        description: "Your vote was not registerd. Please try again.",
+        description: "Your comment was not registerd. Please try again.",
         variant: "destructive",
       });
     },

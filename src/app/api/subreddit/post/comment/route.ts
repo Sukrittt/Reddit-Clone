@@ -15,6 +15,33 @@ export async function PATCH(req: Request) {
       return new Response("UNAUTHORIZED", { status: 401 });
     }
 
+    const post = await db.post.findFirst({
+      where: {
+        id: postId,
+      },
+      include: {
+        Subreddit: true,
+      },
+    });
+
+    if (!post) {
+      return new Response("Post not found", { status: 404 });
+    }
+
+    const subscriptionExists = await db.subscription.findFirst({
+      where: {
+        subredditId: post.Subreddit.id,
+        userId: session.user.id,
+      },
+    });
+
+    if (!subscriptionExists) {
+      return new Response(
+        "You have to be subscribed to this subreddit in order to comment.",
+        { status: 400 }
+      );
+    }
+
     await db.comment.create({
       data: {
         text,
