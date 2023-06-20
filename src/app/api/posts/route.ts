@@ -8,23 +8,6 @@ export async function GET(req: Request) {
 
   const session = await getAuthSession();
 
-  let followedCommunityIds: string[] = [];
-
-  if (session) {
-    const followedCommunites = await db.subscription.findMany({
-      where: {
-        userId: session.user.id,
-      },
-      include: {
-        subreddit: true,
-      },
-    });
-
-    followedCommunityIds = followedCommunites.map(
-      ({ subreddit }) => subreddit.id
-    );
-  }
-
   try {
     const { limit, page, subredditName } = z
       .object({
@@ -39,6 +22,7 @@ export async function GET(req: Request) {
       });
 
     let whereClause = {};
+    let orderByClause = {};
 
     if (subredditName) {
       whereClause = {
@@ -46,22 +30,24 @@ export async function GET(req: Request) {
           name: subredditName,
         },
       };
+      orderByClause = { createdAt: "desc" };
     } else if (session) {
-      whereClause = {
-        Subreddit: {
-          id: {
-            in: followedCommunityIds,
+      orderByClause = [
+        {
+          comments: {
+            _count: "desc",
           },
         },
-      };
+        {
+          createdAt: "desc",
+        },
+      ];
     }
 
     const posts = await db.post.findMany({
       take: parseInt(limit),
       skip: (parseInt(page) - 1) * parseInt(limit),
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: orderByClause,
       include: {
         Subreddit: true,
         votes: true,

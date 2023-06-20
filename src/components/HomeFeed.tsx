@@ -7,9 +7,16 @@ import { getAuthSession } from "@/lib/auth";
 
 export const GeneralFeed = async () => {
   const posts = await db.post.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: [
+      {
+        comments: {
+          _count: "desc",
+        },
+      },
+      {
+        createdAt: "desc",
+      },
+    ],
     include: {
       votes: true,
       author: true,
@@ -27,26 +34,17 @@ export const CustomFeed = async () => {
 
   if (!session) return notFound();
 
-  const followedCommunities = await db.subscription.findMany({
-    where: {
-      userId: session.user.id,
-    },
-    include: {
-      subreddit: true,
-    },
-  });
-
   const posts = await db.post.findMany({
-    where: {
-      Subreddit: {
-        name: {
-          in: followedCommunities.map(({ subreddit }) => subreddit.name),
+    orderBy: [
+      {
+        comments: {
+          _count: "desc",
         },
       },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+      {
+        createdAt: "desc",
+      },
+    ],
     include: {
       author: true,
       comments: true,
