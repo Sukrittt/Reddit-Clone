@@ -64,17 +64,26 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
           return toast({
             title: "Forbidden",
             description: "You don't have permission to do that.",
+            variant: "destructive",
           });
         } else if (statusCode === 409) {
           return toast({
             title: "Subreddit with this name already exists.",
             description: "Please choose a different name.",
+            variant: "destructive",
+          });
+        } else if (statusCode === 422) {
+          return toast({
+            title: "Invalid subreddit name.",
+            description: "Please choose a name between 3 and 21 characters.",
+            variant: "destructive",
           });
         }
       }
       toast({
         title: "An error occurred.",
         description: "Unable to change subreddit name. Please try again later.",
+        variant: "destructive",
       });
     },
     onSuccess: () => {
@@ -106,17 +115,20 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
           return toast({
             title: "Not Found",
             description: "Either the user or the subreddit does not exist.",
+            variant: "destructive",
           });
         } else if (statusCode === 422) {
           return toast({
             title: "Invalid Request",
             description: "Either the user or the subreddit does not exist.",
+            variant: "destructive",
           });
         }
       }
       toast({
         title: "An error occurred.",
         description: "Unable to change subreddit name. Please try again later.",
+        variant: "destructive",
       });
     },
     onSuccess: () => {
@@ -150,17 +162,20 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
             return toast({
               title: "Not Found",
               description: "Subreddit does not exist.",
+              variant: "destructive",
             });
           } else if (statusCode === 403) {
             return toast({
               title: "Forbidden",
               description: "You don't have permission to do that.",
+              variant: "destructive",
             });
           }
         }
         toast({
           title: "An error occurred.",
           description: "Unable to delete subreddit. Please try again later.",
+          variant: "destructive",
         });
       },
       onSuccess: () => {
