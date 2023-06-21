@@ -131,7 +131,10 @@ const Post = (props: {
                 <span className="px-1">•</span>
               </>
             )}
-            <span>Posted by u/{post.author.username}</span>{" "}
+            <span>
+              Posted by u/{post.author.username} •{" "}
+              {post.Subreddit.creatorId === post.authorId ? "ADMIN •" : ""}
+            </span>{" "}
             {formatTimeToNow(new Date(post.createdAt))}
           </div>
 
