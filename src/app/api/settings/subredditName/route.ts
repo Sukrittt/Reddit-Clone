@@ -29,6 +29,18 @@ export async function PATCH(req: Request) {
       );
     }
 
+    const existingSubreddit = await db.subreddit.findFirst({
+      where: {
+        name,
+      },
+    });
+
+    if (existingSubreddit) {
+      return new Response("Subreddit with this name already exists.", {
+        status: 409,
+      });
+    }
+
     await db.subreddit.update({
       where: {
         id: subredditId,

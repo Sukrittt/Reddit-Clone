@@ -63,9 +63,14 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
         if (statusCode === 401) {
           return loginToast();
         } else if (statusCode === 403) {
-          toast({
+          return toast({
             title: "Forbidden",
             description: "You don't have permission to do that.",
+          });
+        } else if (statusCode === 409) {
+          return toast({
+            title: "Subreddit with this name already exists.",
+            description: "Please choose a different name.",
           });
         }
       }
@@ -96,12 +101,12 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
         if (statusCode === 401) {
           return loginToast();
         } else if (statusCode === 404) {
-          toast({
+          return toast({
             title: "Not Found",
             description: "Either the user or the subreddit does not exist.",
           });
         } else if (statusCode === 422) {
-          toast({
+          return toast({
             title: "Invalid Request",
             description: "Either the user or the subreddit does not exist.",
           });
