@@ -13,12 +13,20 @@ export const SubredditSubscriptionValidator = z.object({
   subredditId: z.string(),
 });
 
-export const subredditDeletePayload = z.object({
+export const subredditMemberDeletePayload = z.object({
   userId: z.string(),
   subredditId: z.string(),
 });
 
-export type subredditDeleteRequest = z.infer<typeof subredditDeletePayload>;
+export const subredditDeleteValidator = z.object({
+  subredditId: z.string(),
+});
+
+export type subredditDeleteRequest = z.infer<typeof subredditDeleteValidator>;
+
+export type subredditMemberDeleteRequest = z.infer<
+  typeof subredditMemberDeletePayload
+>;
 
 export type CreateSubredditPayload = z.infer<typeof SubredditValidator>;
 export type SubredditSubscriptionPayload = z.infer<

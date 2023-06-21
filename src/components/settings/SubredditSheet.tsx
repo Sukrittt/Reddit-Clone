@@ -27,6 +27,7 @@ import { CustomToolTip } from "@/components/CustomToolTip";
 import {
   SubredditNamePayload,
   subredditDeleteRequest,
+  subredditMemberDeleteRequest,
 } from "@/lib/validators/subreddit";
 import CustomAlertDialog from "@/components/CustomAlertDialog";
 
@@ -50,10 +51,7 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
         subredditId: subreddit.id,
       };
 
-      const { data } = await axios.patch(
-        "/api/settings/subredditName",
-        payload
-      );
+      const { data } = await axios.patch("/api/settings/subreddit", payload);
       return data;
     },
     onError: (error) => {
@@ -76,7 +74,7 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
       }
       toast({
         title: "An error occurred.",
-        description: "Unable to change subreddit name.",
+        description: "Unable to change subreddit name. Please try again later.",
       });
     },
     onSuccess: () => {
@@ -87,11 +85,15 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
     },
   });
 
+  //remove user from subreddit
   const { mutate: removeUser, isLoading: removeUserLoader } = useMutation({
-    mutationFn: async ({ userId, subredditId }: subredditDeleteRequest) => {
-      const { data } = await axios.delete(
-        `/api/settings/subredditMember/remove?userId=${userId}&subredditId=${subredditId}`
-      );
+    mutationFn: async ({
+      userId,
+      subredditId,
+    }: subredditMemberDeleteRequest) => {
+      const endpoint = `/api/settings/subreddit?userId=${userId}&subredditId=${subredditId}`;
+      const { data } = await axios.delete(endpoint);
+
       return data;
     },
     onError: (error) => {
@@ -114,7 +116,7 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
       }
       toast({
         title: "An error occurred.",
-        description: "Unable to change subreddit name.",
+        description: "Unable to change subreddit name. Please try again later.",
       });
     },
     onSuccess: () => {
@@ -124,10 +126,50 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
       setRemovingUserId(null);
       router.refresh();
     },
-    onMutate: ({ userId }: subredditDeleteRequest) => {
+    onMutate: ({ userId }: subredditMemberDeleteRequest) => {
       setRemovingUserId(userId);
     },
   });
+
+  //delete subreddit
+  const { mutate: deleteSubreddit, isLoading: deleteSubredditLoader } =
+    useMutation({
+      mutationFn: async ({ subredditId }: subredditDeleteRequest) => {
+        const endpoint = `/api/settings/subreddit?subredditId=${subredditId}`;
+        const { data } = await axios.delete(endpoint);
+
+        return data;
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          const statusCode = error.response?.status;
+
+          if (statusCode === 401) {
+            return loginToast();
+          } else if (statusCode === 404) {
+            return toast({
+              title: "Not Found",
+              description: "Subreddit does not exist.",
+            });
+          } else if (statusCode === 403) {
+            return toast({
+              title: "Forbidden",
+              description: "You don't have permission to do that.",
+            });
+          }
+        }
+        toast({
+          title: "An error occurred.",
+          description: "Unable to delete subreddit. Please try again later.",
+        });
+      },
+      onSuccess: () => {
+        toast({
+          description: "Subreddit removed successfully",
+        });
+        router.refresh();
+      },
+    });
 
   return (
     <Sheet>
@@ -202,7 +244,9 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
                             }
                             descriptipn="This action cannot be undone. You are about to remove a user from this subreddit."
                           >
-                            <Ban className="cursor-pointer h-4 w-4 text-zinc-400 hover:text-zinc-500 transition" />
+                            <button>
+                              <Ban className="cursor-pointer h-4 w-4 text-zinc-400 hover:text-zinc-500 transition" />
+                            </button>
                           </CustomAlertDialog>
                         )}
                       </>
@@ -213,10 +257,22 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
             </div>
           </div>
         </div>
-        <SheetFooter>
-          {/* <SheetClose asChild>
-            <Button type="submit">Done</Button>
-          </SheetClose> */}
+        <SheetFooter className="flex items-center gap-1 my-4">
+          <CustomAlertDialog
+            onClick={() => deleteSubreddit({ subredditId: subreddit.id })}
+            descriptipn="This action cannot be undone. You are about to delete this subreddit."
+          >
+            <Button
+              variant="destructive"
+              className="border text-red-500 border-red-500 hover:text-white cursor-pointer w-full sm:w-auto"
+              isLoading={deleteSubredditLoader}
+            >
+              {deleteSubredditLoader ? "Deleting" : "Delete"}
+            </Button>
+          </CustomAlertDialog>
+          <SheetClose asChild>
+            <Button className="w-full sm:w-auto">Close</Button>
+          </SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>

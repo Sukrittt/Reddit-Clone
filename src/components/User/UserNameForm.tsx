@@ -45,7 +45,7 @@ const UserNameForm: FC<UserNameFormProps> = ({ user }) => {
     mutationFn: async ({ name }: UserNameType) => {
       const payload: UserNameType = { name };
 
-      const { data } = await axios.patch("/api/settings/username", payload);
+      const { data } = await axios.patch("/api/settings/user", payload);
       return data as string;
     },
     onError: (error) => {

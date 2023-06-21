@@ -25,9 +25,7 @@ const CustomAlertDialog: FC<CustomAlertDialogProps> = ({
 }) => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <button>{children}</button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
