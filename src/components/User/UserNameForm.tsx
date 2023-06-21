@@ -60,6 +60,12 @@ const UserNameForm: FC<UserNameFormProps> = ({ user }) => {
             description: "Please try another one.",
             variant: "destructive",
           });
+        } else if (responseStatus === 422) {
+          return toast({
+            title: "Invalid username.",
+            description: "Please try another one.",
+            variant: "destructive",
+          });
         }
       }
 
