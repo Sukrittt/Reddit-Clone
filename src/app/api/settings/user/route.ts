@@ -21,6 +21,7 @@ export async function DELETE() {
 
     return new Response("OK");
   } catch (error) {
+    console.log(error);
     return new Response("Something went wrong", { status: 500 });
   }
 }

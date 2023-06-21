@@ -18,7 +18,7 @@ interface CustomAlertDialogProps {
   onClick: () => void;
 }
 
-const CustomAlertDialog: FC<CustomAlertDialogProps> = ({
+export const CustomAlertDialog: FC<CustomAlertDialogProps> = ({
   children,
   descriptipn,
   onClick,
@@ -39,5 +39,3 @@ const CustomAlertDialog: FC<CustomAlertDialogProps> = ({
     </AlertDialog>
   );
 };
-
-export default CustomAlertDialog;

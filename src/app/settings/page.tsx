@@ -52,7 +52,11 @@ const page = async () => {
         />
       )}
 
-      <UserDeletion />
+      <UserDeletion
+        user={{
+          username: session.user.username || "",
+        }}
+      />
     </div>
   );
 };

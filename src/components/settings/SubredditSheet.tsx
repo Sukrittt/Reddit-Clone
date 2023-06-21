@@ -23,13 +23,13 @@ import { cn } from "@/lib/utils";
 import { ExtendedSubreddit } from "@/types/db";
 import { toast } from "@/hooks/use-toast";
 import { useAuthToast } from "@/hooks/useAuthToast";
-import { CustomToolTip } from "@/components/CustomToolTip";
+import { CustomToolTip } from "@/components/custom/CustomToolTip";
 import {
   SubredditNamePayload,
   subredditDeleteRequest,
   subredditMemberDeleteRequest,
 } from "@/lib/validators/subreddit";
-import CustomAlertDialog from "@/components/CustomAlertDialog";
+import { CustomAlertDialog } from "@/components/custom/CustomAlertDialog";
 
 interface SubredditSheetProps {
   subreddit: ExtendedSubreddit;
