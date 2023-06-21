@@ -86,6 +86,7 @@ const Page = () => {
         <div className="flex justify-end gap-4">
           <Button
             variant="subtle"
+            tabIndex={input.length === 0 ? undefined : 1}
             onClick={() => router.back()}
             className="text-xs sm:text-sm"
           >
