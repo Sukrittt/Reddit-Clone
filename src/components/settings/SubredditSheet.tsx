@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { Ban, Info, Trash } from "lucide-react";
+import { Ban, Info, Loader2 } from "lucide-react";
 import { User } from "@prisma/client";
 
 import {
@@ -24,7 +24,11 @@ import { ExtendedSubreddit } from "@/types/db";
 import { toast } from "@/hooks/use-toast";
 import { useAuthToast } from "@/hooks/useAuthToast";
 import { CustomToolTip } from "@/components/CustomToolTip";
-import { SubredditNamePayload } from "@/lib/validators/subreddit";
+import {
+  SubredditNamePayload,
+  subredditDeleteRequest,
+} from "@/lib/validators/subreddit";
+import CustomAlertDialog from "@/components/CustomAlertDialog";
 
 interface SubredditSheetProps {
   subreddit: ExtendedSubreddit;
@@ -36,7 +40,9 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
   const router = useRouter();
 
   const [subredditName, setSubredditName] = useState<string>(subreddit.name);
+  const [removingUserId, setRemovingUserId] = useState<string | null>(null);
 
+  //change subreddit name
   const { mutate: changeName, isLoading: nameLoading } = useMutation({
     mutationFn: async () => {
       const payload: SubredditNamePayload = {
@@ -73,6 +79,48 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
         description: "Subreddit name changed successfully.",
       });
       router.refresh();
+    },
+  });
+
+  const { mutate: removeUser, isLoading: removeUserLoader } = useMutation({
+    mutationFn: async ({ userId, subredditId }: subredditDeleteRequest) => {
+      const { data } = await axios.delete(
+        `/api/settings/subredditMember/remove?userId=${userId}&subredditId=${subredditId}`
+      );
+      return data;
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        const statusCode = error.response?.status;
+
+        if (statusCode === 401) {
+          return loginToast();
+        } else if (statusCode === 404) {
+          toast({
+            title: "Not Found",
+            description: "Either the user or the subreddit does not exist.",
+          });
+        } else if (statusCode === 422) {
+          toast({
+            title: "Invalid Request",
+            description: "Either the user or the subreddit does not exist.",
+          });
+        }
+      }
+      toast({
+        title: "An error occurred.",
+        description: "Unable to change subreddit name.",
+      });
+    },
+    onSuccess: () => {
+      toast({
+        description: "User removed successfully",
+      });
+      setRemovingUserId(null);
+      router.refresh();
+    },
+    onMutate: ({ userId }: subredditDeleteRequest) => {
+      setRemovingUserId(userId);
     },
   });
 
@@ -120,7 +168,7 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
                 <div
                   className={cn(
                     buttonVariants({ variant: "subtle" }),
-                    "flex items-center justify-start gap-x-4 w-full"
+                    "flex items-center justify-start gap-x-4 w-full active:scale-100"
                   )}
                   key={subscriber.user.id}
                 >
@@ -136,17 +184,22 @@ const SubredditSheet: FC<SubredditSheetProps> = ({ subreddit, user }) => {
                       </>
                     ) : (
                       <>
-                        <div>
-                          <CustomToolTip
-                            trigger={Ban}
-                            text="Ban user from posting"
-                          />
-                          <div className="sr-only">Ban</div>
-                        </div>
-                        <div>
-                          <CustomToolTip trigger={Trash} text="Remove user" />
-                          <div className="sr-only">Remove</div>
-                        </div>
+                        {removeUserLoader &&
+                        removingUserId === subscriber.user.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+                        ) : (
+                          <CustomAlertDialog
+                            onClick={() =>
+                              removeUser({
+                                userId: subscriber.user.id,
+                                subredditId: subscriber.subredditId,
+                              })
+                            }
+                            descriptipn="This action cannot be undone. You are about to remove a user from this subreddit."
+                          >
+                            <Ban className="cursor-pointer h-4 w-4 text-zinc-400 hover:text-zinc-500 transition" />
+                          </CustomAlertDialog>
+                        )}
                       </>
                     )}
                   </div>

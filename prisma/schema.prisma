@@ -64,7 +64,7 @@ model Subreddit {
 
   posts Post[]
 
-  Creator   User?   @relation("CreatedBy", fields: [creatorId], references: [id])
+  Creator   User?   @relation("CreatedBy", fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId String?
 
   subscribers Subscription[]
@@ -73,7 +73,7 @@ model Subreddit {
 }
 
 model Subscription {
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   subreddit   Subreddit @relation(fields: [subredditId], references: [id])
@@ -92,7 +92,7 @@ model Post {
   Subreddit   Subreddit @relation(fields: [subredditId], references: [id])
   subredditId String
 
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
   comments Comment[]
@@ -104,7 +104,7 @@ model Comment {
   text      String
   createdAt DateTime @default(now())
 
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
   post   Post   @relation(fields: [postId], references: [id])
@@ -124,7 +124,7 @@ enum VoteType {
 }
 
 model Vote {
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   post   Post   @relation(fields: [postId], references: [id])
@@ -136,7 +136,7 @@ model Vote {
 }
 
 model CommentVote {
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   comment   Comment @relation(fields: [commentId], references: [id])

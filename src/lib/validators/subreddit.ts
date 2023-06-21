@@ -13,6 +13,13 @@ export const SubredditSubscriptionValidator = z.object({
   subredditId: z.string(),
 });
 
+export const subredditDeletePayload = z.object({
+  userId: z.string(),
+  subredditId: z.string(),
+});
+
+export type subredditDeleteRequest = z.infer<typeof subredditDeletePayload>;
+
 export type CreateSubredditPayload = z.infer<typeof SubredditValidator>;
 export type SubredditSubscriptionPayload = z.infer<
   typeof SubredditSubscriptionValidator
